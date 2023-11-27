@@ -5,24 +5,26 @@ let lastKeyUpTime = 0;
 let spaceTimeout;
 let spaceAdded = false; 
 let dotLength = 200;
-let spaceTime = dotLength + 100;
+let spaceTime = dotLength + 300;
+let isMuted = false;
 
 document.addEventListener('keydown', function(event) {
-    clearTimeout(spaceTimeout); 
-    spaceAdded = false; 
+    if (event.code === 'Space') {
+        if (!keyDownTime) {
+            keyDownTime = new Date().getTime();
+        }
 
-    if (event.code === 'Space' && !oscillator) {
-        keyDownTime = new Date().getTime();
-
-        oscillator = context.createOscillator();
-        oscillator.frequency.setValueAtTime(500, context.currentTime); 
-        oscillator.connect(context.destination);
-        oscillator.start();
+        if (!oscillator && !isMuted) {
+            oscillator = context.createOscillator();
+            oscillator.frequency.setValueAtTime(500, context.currentTime); 
+            oscillator.connect(context.destination);
+            oscillator.start();
+        }
     }
 });
 
 document.addEventListener('keyup', function(event) {
-    if (event.code === 'Space' && oscillator) {
+    if (event.code === 'Space') {
         const keyUpTime = new Date().getTime(); 
         const duration = keyUpTime - keyDownTime; 
 
@@ -32,16 +34,23 @@ document.addEventListener('keyup', function(event) {
             printMessage("-"); 
         }
 
-        oscillator.stop();
-        oscillator.disconnect();
-        oscillator = null;
+        if (oscillator) {
+            oscillator.stop();
+            oscillator.disconnect();
+            oscillator = null;
+        }
 
-        lastKeyUpTime = keyUpTime; 
+        keyDownTime = null;
+        lastKeyUpTime = keyUpTime;
+
+        clearTimeout(spaceTimeout);
 
         spaceTimeout = setTimeout(function() {
-            if (new Date().getTime() - lastKeyUpTime >= spaceTime && !spaceAdded) { 
+            if (new Date().getTime() - lastKeyUpTime >= spaceTime) { 
                 printMessage(" "); 
                 spaceAdded = true; 
+            } else {
+                spaceAdded = false;
             }
         }, spaceTime);
     }
@@ -135,5 +144,15 @@ function translateMorse() {
     const morseCode = document.getElementById('output').value.trim();
     const translation = morseCodeTranslator(morseCode);
     document.getElementById('translation').textContent = translation;
+}
+
+function toggleMute() {
+    isMuted = !isMuted;
+    const muteButton = document.querySelector('.btn-warning');
+    if (isMuted) {
+        muteButton.textContent = 'Unmute';
+    } else {
+        muteButton.textContent = 'Mute';
+    }
 }
 
