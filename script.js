@@ -10,6 +10,8 @@ let pitch = 500;
 let lastCharacterTime = 0; 
 
 document.addEventListener('keydown', function(event) {
+    if (!document.hasFocus()) return;
+
     if (!keyDownTime) { 
         keyDownTime = new Date().getTime();
 
@@ -75,7 +77,14 @@ function copyText() {
 function clearText() {
     document.getElementById('output').value = ''; 
     document.getElementById('translation').textContent = ''; 
+
+    clearTimeout(spaceTimeout);
+    clearTimeout(slashTimeout);
+
+    keyDownTime = null;
+    lastKeyUpTime = 0;
 }
+
 
 
 function morseCodeTranslator(morseCode) {
@@ -182,3 +191,12 @@ function updatePitch() {
     pitch = parseInt(slider.value);
     pitchDisplay.textContent = pitch;
 }
+
+window.addEventListener('blur', function() {
+    if (oscillator) {
+        oscillator.stop();
+        oscillator.disconnect();
+        oscillator = null;
+    }
+    keyDownTime = null;
+});
