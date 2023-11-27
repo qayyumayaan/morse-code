@@ -30,9 +30,16 @@ document.addEventListener('keyup', function(event) {
     }
 });
 
+
 function printMessage(message) {
-    const mainContent = document.getElementById('mainContent');
-    mainContent.innerHTML += `<p>${message}</p>`; // Append the message to the main content
+    const output = document.getElementById('output');
+    output.value += message; // Append the message to the text box
+}
+
+function copyText() {
+    const output = document.getElementById('output');
+    output.select();
+    document.execCommand('copy');
 }
 
 document.addEventListener('keyup', function(event) {
