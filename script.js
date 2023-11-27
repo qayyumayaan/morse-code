@@ -10,7 +10,7 @@ let pitch = 500;
 let lastCharacterTime = 0; 
 
 document.addEventListener('keydown', function(event) {
-    if (event.code === 'Space' && !keyDownTime) {
+    if (!keyDownTime) { 
         keyDownTime = new Date().getTime();
 
         if (!oscillator && !isMuted) {
@@ -23,39 +23,38 @@ document.addEventListener('keydown', function(event) {
 });
 
 document.addEventListener('keyup', function(event) {
-    if (event.code === 'Space') {
-        const keyUpTime = new Date().getTime();
-        const duration = keyUpTime - keyDownTime;
+    // Removed the specific check for 'Space'
+    const keyUpTime = new Date().getTime();
+    const duration = keyUpTime - keyDownTime;
 
-        if (duration <= dotLength) {
-            printMessage(".");
-        } else {
-            printMessage("-");
-        }
-
-        if (oscillator) {
-            oscillator.stop();
-            oscillator.disconnect();
-            oscillator = null;
-        }
-
-        keyDownTime = null;
-
-        clearTimeout(spaceTimeout);
-        clearTimeout(slashTimeout);
-
-        spaceTimeout = setTimeout(function() {
-            if (new Date().getTime() - keyUpTime >= dotLength * 3) {
-                printMessage(" ");
-            }
-        }, dotLength * 3);
-
-        slashTimeout = setTimeout(function() {
-            if (new Date().getTime() - keyUpTime >= dotLength * 7) {
-                printMessage("/ ");
-            }
-        }, dotLength * 7);
+    if (duration <= dotLength) {
+        printMessage(".");
+    } else {
+        printMessage("-");
     }
+
+    if (oscillator) {
+        oscillator.stop();
+        oscillator.disconnect();
+        oscillator = null;
+    }
+
+    keyDownTime = null;
+
+    clearTimeout(spaceTimeout);
+    clearTimeout(slashTimeout);
+
+    spaceTimeout = setTimeout(function() {
+        if (new Date().getTime() - keyUpTime >= dotLength * 3) {
+            printMessage(" ");
+        }
+    }, dotLength * 3);
+
+    slashTimeout = setTimeout(function() {
+        if (new Date().getTime() - keyUpTime >= dotLength * 7) {
+            printMessage("/ ");
+        }
+    }, dotLength * 7);
 });
 
 
