@@ -4,6 +4,7 @@ let keyDownTime;
 let lastKeyUpTime = 0;
 let spaceTimeout;
 let spaceAdded = false; 
+let dotLength = 200;
 
 document.addEventListener('keydown', function(event) {
     clearTimeout(spaceTimeout); 
@@ -24,7 +25,7 @@ document.addEventListener('keyup', function(event) {
         const keyUpTime = new Date().getTime(); 
         const duration = keyUpTime - keyDownTime; 
 
-        if (duration <= 250) {
+        if (duration <= dotLength) {
             printMessage(". "); 
         } else {
             printMessage("- "); 
@@ -54,7 +55,10 @@ function copyText() {
     const output = document.getElementById('output');
     output.select();
     document.execCommand('copy');
-}    document.getElementById('output').value = ''; 
+}
+
+function clearText() {
+    document.getElementById('output').value = ''; 
     document.getElementById('translation').textContent = ''; 
 }
 
