@@ -126,7 +126,6 @@ function morseCodeTranslator(morseCode) {
         "...-.": "[Understood] ",
         "........": "[Error] ",
         ".-.-.": "+",
-        "-.-": "[Invitation to transmit] ",
         ".-...": "[Wait] ",
         "...-.-": "[End of work] ",
         "-.-.-": "[Starting signal] ",
@@ -134,6 +133,7 @@ function morseCodeTranslator(morseCode) {
         ".--.-.": "@",
         " ": " "
     };
+        // "-.-": "[Invitation to transmit] ",
     console.log(morseCode)
     const bruh = morseCode.split(' ').map(code => morseToText[code]).join('');
     console.log(bruh)
@@ -157,3 +157,14 @@ function toggleMute() {
     }
 }
 
+function updateDotLength() {
+    const slider = document.getElementById('dot-length-slider');
+    const dotLengthDisplay = document.getElementById('dot-length-display');
+    const dotLengthValue = document.getElementById('dot-length-value');
+    const dashLengthValue = document.getElementById('dash-length-value');
+
+    dotLength = parseInt(slider.value);
+    dotLengthDisplay.textContent = dotLength;
+    dotLengthValue.textContent = dotLength;
+    dashLengthValue.textContent = dotLength * 3; 
+}

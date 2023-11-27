@@ -27,6 +27,11 @@
                 <button class="btn btn-primary me-2" onclick="copyText()">Copy</button>
                 <button class="btn btn-warning" onclick="toggleMute()">Mute</button>
             </div>
+            <div class="mb-3">
+                <label for="dot-length-slider" class="form-label">Dot Length: <span id="dot-length-display">200</span> ms</label>
+                <input type="range" class="form-range" min="25" max="100" value="200" id="dot-length-slider" onchange="updateDotLength()">
+            </div>
+            <p>The length of an acceptable dot is <span id="dot-length-value">200</span> ms and the length of a dash is <span id="dash-length-value">600</span> ms. </p>
             <p id="translation"></p> 
             <p>This uses ITU Morse code.</p>
             <img src="morse-code.jpg" class="img-fluid">
