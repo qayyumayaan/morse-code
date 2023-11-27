@@ -1,13 +1,19 @@
 let context = new AudioContext();
 let oscillator;
 let keyDownTime;
+let lastKeyUpTime = 0;
+let spaceTimeout;
+let spaceAdded = false; 
 
 document.addEventListener('keydown', function(event) {
+    clearTimeout(spaceTimeout); 
+    spaceAdded = false; 
+
     if (event.code === 'Space' && !oscillator) {
-        keyDownTime = new Date().getTime(); // Record the time when the key is pressed down
+        keyDownTime = new Date().getTime();
 
         oscillator = context.createOscillator();
-        oscillator.frequency.setValueAtTime(500, context.currentTime); // Set frequency to 500 Hz
+        oscillator.frequency.setValueAtTime(500, context.currentTime); 
         oscillator.connect(context.destination);
         oscillator.start();
     }
@@ -15,25 +21,33 @@ document.addEventListener('keydown', function(event) {
 
 document.addEventListener('keyup', function(event) {
     if (event.code === 'Space' && oscillator) {
-        const keyUpTime = new Date().getTime(); // Record the time when the key is released
-        const duration = keyUpTime - keyDownTime; // Calculate the duration of the key press
+        const keyUpTime = new Date().getTime(); 
+        const duration = keyUpTime - keyDownTime; 
 
         if (duration <= 250) {
-            printMessage(". "); // Print "." for short presses
+            printMessage(". "); 
         } else {
-            printMessage("- "); // Print "-" for long presses
+            printMessage("- "); 
         }
 
         oscillator.stop();
         oscillator.disconnect();
         oscillator = null;
+
+        lastKeyUpTime = keyUpTime; 
+
+        spaceTimeout = setTimeout(function() {
+            if (new Date().getTime() - lastKeyUpTime >= 500 && !spaceAdded) { 
+                printMessage(" "); 
+                spaceAdded = true; 
+            }
+        }, 2000);
     }
 });
 
-
 function printMessage(message) {
     const output = document.getElementById('output');
-    output.value += message; // Append the message to the text box
+    output.value += message; 
 }
 
 function copyText() {
@@ -41,9 +55,3 @@ function copyText() {
     output.select();
     document.execCommand('copy');
 }
-
-document.addEventListener('keyup', function(event) {
-    if (event.code !== 'Space') {
-        printMessage(" ");
-    }
-});
