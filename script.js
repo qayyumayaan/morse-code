@@ -19,9 +19,9 @@ document.addEventListener('keyup', function(event) {
         const duration = keyUpTime - keyDownTime; // Calculate the duration of the key press
 
         if (duration <= 250) {
-            printMessage("DOT");
+            printMessage(". "); // Print "." for short presses
         } else {
-            printMessage("DASH");
+            printMessage("- "); // Print "-" for long presses
         }
 
         oscillator.stop();
