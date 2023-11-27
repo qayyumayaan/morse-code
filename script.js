@@ -54,4 +54,7 @@ function copyText() {
     const output = document.getElementById('output');
     output.select();
     document.execCommand('copy');
+}    document.getElementById('output').value = ''; 
+    document.getElementById('translation').textContent = ''; 
 }
+
