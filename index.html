@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>200 Hz Tone Player</title>
+    <style>
+        body {
+            text-align: center;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Press Spacebar to Play a 200 Hz Tone</h1>
+    <script>
+        let context = new AudioContext();
+        let oscillator;
+        
+        document.addEventListener('keydown', function(event) {
+            if (event.code === 'Space' && !oscillator) {
+                oscillator = context.createOscillator();
+                oscillator.frequency.setValueAtTime(500, context.currentTime); // Set frequency to 200 Hz
+                oscillator.connect(context.destination);
+                oscillator.start();
+            }
+        });
+        
+        document.addEventListener('keyup', function(event) {
+            if (event.code === 'Space' && oscillator) {
+                oscillator.stop();
+                oscillator.disconnect();
+                oscillator = null;
+            }
+        });
+        
+        
+    </script>
+</body>
+</html>
