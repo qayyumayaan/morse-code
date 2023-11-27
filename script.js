@@ -2,21 +2,20 @@ let context = new AudioContext();
 let oscillator;
 let keyDownTime;
 let lastKeyUpTime = 0;
-let spaceTimeout;
+let spaceTimeout, slashTimeout;
 let spaceAdded = false; 
 let dotLength = 200;
-let spaceTime = dotLength + 300;
 let isMuted = false;
+let pitch = 500;
+let lastCharacterTime = 0; 
 
 document.addEventListener('keydown', function(event) {
-    if (event.code === 'Space') {
-        if (!keyDownTime) {
-            keyDownTime = new Date().getTime();
-        }
+    if (event.code === 'Space' && !keyDownTime) {
+        keyDownTime = new Date().getTime();
 
         if (!oscillator && !isMuted) {
             oscillator = context.createOscillator();
-            oscillator.frequency.setValueAtTime(500, context.currentTime); 
+            oscillator.frequency.setValueAtTime(pitch, context.currentTime); 
             oscillator.connect(context.destination);
             oscillator.start();
         }
@@ -25,13 +24,13 @@ document.addEventListener('keydown', function(event) {
 
 document.addEventListener('keyup', function(event) {
     if (event.code === 'Space') {
-        const keyUpTime = new Date().getTime(); 
-        const duration = keyUpTime - keyDownTime; 
+        const keyUpTime = new Date().getTime();
+        const duration = keyUpTime - keyDownTime;
 
         if (duration <= dotLength) {
-            printMessage("."); 
+            printMessage(".");
         } else {
-            printMessage("-"); 
+            printMessage("-");
         }
 
         if (oscillator) {
@@ -41,20 +40,27 @@ document.addEventListener('keyup', function(event) {
         }
 
         keyDownTime = null;
-        lastKeyUpTime = keyUpTime;
 
         clearTimeout(spaceTimeout);
+        clearTimeout(slashTimeout);
 
         spaceTimeout = setTimeout(function() {
-            if (new Date().getTime() - lastKeyUpTime >= spaceTime) { 
-                printMessage(" "); 
-                spaceAdded = true; 
-            } else {
-                spaceAdded = false;
+            if (new Date().getTime() - keyUpTime >= dotLength * 3) {
+                printMessage(" ");
             }
-        }, spaceTime);
+        }, dotLength * 3);
+
+        slashTimeout = setTimeout(function() {
+            if (new Date().getTime() - keyUpTime >= dotLength * 7) {
+                printMessage("/ ");
+            }
+        }, dotLength * 7);
     }
 });
+
+
+
+
 
 function printMessage(message) {
     const output = document.getElementById('output');
@@ -131,7 +137,8 @@ function morseCodeTranslator(morseCode) {
         "-.-.-": "[Starting signal] ",
         "-..-": "*",
         ".--.-.": "@",
-        " ": " "
+        " ": " ",
+        "/": " "
     };
         // "-.-": "[Invitation to transmit] ",
     console.log(morseCode)
@@ -167,4 +174,12 @@ function updateDotLength() {
     dotLengthDisplay.textContent = dotLength;
     dotLengthValue.textContent = dotLength;
     dashLengthValue.textContent = dotLength * 3; 
+}
+
+function updatePitch() {
+    const slider = document.getElementById('pitch-slider');
+    const pitchDisplay = document.getElementById('pitch-display');
+
+    pitch = parseInt(slider.value);
+    pitchDisplay.textContent = pitch;
 }
