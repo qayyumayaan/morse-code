@@ -58,3 +58,48 @@ function copyText() {
     document.getElementById('translation').textContent = ''; 
 }
 
+
+function translateMorse() {
+    const morseCode = document.getElementById('output').value.trim();
+    if (morseCode === '') {
+        // document.getElementById('translation').textContent = 'No Morse code to translate';
+        return;
+    }
+    const morseToEnglish = {
+        ".-": "A", 
+        "-...": "B", 
+        "-.-.": "C", 
+        "-..": "D", 
+        ".": "E",
+        "..-.": "F", 
+        "--.": "G", 
+        "....": "H", 
+        "..": "I", 
+        ".---": "J",
+        "-.-": "K", 
+        ".-..": "L", 
+        "--": "M", 
+        "-.": "N", 
+        "---": "O",
+        ".--.": "P", 
+        "--.-": "Q", 
+        ".-.": "R", 
+        "...": "S", 
+        "-": "T",
+        "..-": "U", 
+        "...-": "V", 
+        ".--": "W", 
+        "-..-": "X", 
+        "-.--": "Y",
+        "--..": "Z", 
+        " ": " "
+    };
+
+    const translated = morseCode.split("   ").map(
+        word => word.split(" ").map(
+            character => morseToEnglish[character] || "?" 
+        ).join("")
+    ).join(" ");
+
+    document.getElementById('translation').textContent = translated;
+}
